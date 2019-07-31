@@ -28,11 +28,11 @@
                 <input type="password" class="form-control" name="password" id="password" placeholder="请输入密码">
             </div>
             <p class="bg-danger" id="error-text"></p>
-            
-            
+
+
             <div class="center-block">
                 <a href="register.html" class="btn btn-primary" role="button">注册</a>
-                <button id="login-btn" class="btn btn-success pull-right" type="submit">登陆</button>                
+                <button id="login-btn" class="btn btn-success pull-right" type="submit">登陆</button>
                 <label class="pull-right">
                     <input type="checkbox" value="false" class="seven-day ">勾上我，七天内免登录
                 </label>
@@ -43,8 +43,8 @@
 
 
         <script>
-            window.addEventListener("load", function() {
-                $("#login-form").submit(function(e) {
+            window.addEventListener("load", function () {
+                $("#login-form").submit(function (e) {
                     e.preventDefault();
                     console.log($(".seven-day").val());
 
@@ -52,24 +52,24 @@
                         url: "handle/userhandle.php",
                         type: "post",
                         data: {
-                            do:"loginAccount",
+                            do: "loginAccount",
                             email: $("#email").val(),
                             password: $("#password").val(),
                             sevenday: $(".seven-day").val()
                         },
                         dataType: "text",
-                        success: function(response) {
+                        success: function (response) {
                             response = JSON.parse(response);
-                            if (response.code == "0000") {
-                                window.location.href = "index.html";
+                            if (response.code !== "0000") {
+                                $("#error-text").html(response.msg);
                                 return;
                             }
-                            $("#error-text").html(response.msg);
+                            window.location.href = "index.html";
                         }
                     });
                 });
                 var num = 0;
-                $(".seven-day").click(function() {
+                $(".seven-day").click(function () {
                     num++;
                     if (num % 2 == 0) {
                         $(this).val("false");

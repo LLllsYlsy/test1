@@ -47,10 +47,10 @@ function loginAccount(){
             session_start();
             $_SESSION['name'] = $result['name'];
             if ($seven == "true") {
-                setcookie('test', $result['name'], time() + 60 * 60 * 24 * 7, "/");
+                setcookie('name', $result['name'], time() + 60 * 60 * 24 * 7, "/");
                 $seven = "";
             } else {
-                setcookie('test', $result['name'], time(), "/");
+                setcookie('name', $result['name'], time(), "/");
             }
             $response = [
                 "code" => "0000",
@@ -102,8 +102,8 @@ function newAccount(){
 //获取用户名
 function getNickname(){
     session_start();
-    if (isset($_COOKIE['test'])) {
-        $_SESSION['name'] = $_COOKIE['test'];
+    if (isset($_COOKIE['name'])) {
+        $_SESSION['name'] = $_COOKIE['name'];
     }
     if (!isset($_SESSION['name'])) {
         $response = [

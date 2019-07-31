@@ -73,7 +73,6 @@ connectMysql();
                 <ul class="nav navbar-nav navbar-right">
                     <li class="dropdown">
                         <a id="user-name" href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
-                            
                             <span class="caret"></span></a>
                         <ul class="dropdown-menu">
                             <li><a href="#" id="quit">退出</a></li>
@@ -98,6 +97,7 @@ connectMysql();
         <!-- <iframe id="delete_iframe" name="delete_iframe"></iframe> -->
 
         <h1>问题列表</h1>
+        <p class="text-info text-center" id="null-text"></p>
         <div id="question-list">
         </div>
 
@@ -105,9 +105,9 @@ connectMysql();
             
 
             $("#questions-submit").submit(function(e){
+                e.preventDefault();
                 $("#error-text").html("");
                 var question = $("#question").val();
-                e.preventDefault();
                 $.ajax({
                     url: "handle/question.php",
                     type: "post",
@@ -118,18 +118,21 @@ connectMysql();
                     },
                     success: function(response) { 
                         response = JSON.parse(response);
-                        if (response.code == "0001") {
+                        if (response.code !== "0000") {
                             $("#error-text").html(response.msg);
-                        } else if (response.code == "0005") {
-                            $("#error-text").html(response.msg);
-                        } else {
-                            questionList(response.data);
-                            $("#question").val("");
+                            return;
                         }
+                            questionList(response.data);
+                            $("#null-text").html("");
+                            $("#question").val("");
+                        },
+                    error:function(){
+                        $("#error-text").html("无法连接网络");
                     }
+                    
+                    });
                 });
-            });
-
+            
 
             $(window).on("load",function(){
                 $.ajax({
@@ -154,9 +157,10 @@ connectMysql();
                                 success:function(response){
                                     response = JSON.parse(response);
                                     if(response.code !== "0000"){
-                                        $("error-text").html(response.msg);
+                                        $("#error-text").html(response.msg);
                                         return;
                                     }
+                                    $("#null-text").html(response.msg);
                                     questionList(response.data);
                                 }
                             });
@@ -182,16 +186,16 @@ connectMysql();
                         },
                         success: function(response) {
                             response = JSON.parse(response);
-                            if (response.code!== "0000") {
-                                $("#error-text").html("不是你的问题不能删除哦!");
+                            if(response.code !== "0000"){
+                                $("#error-text").html(response.msg);
                                 return;
-                            } else {
-                                questionList(response.data);
                             }
-                        }
+                            questionList(response.data);
+                            }
+                        })
                     });
-                });
-            };
+                };
+            
             deleteBtn();
 
             $("#question").click(function() {
@@ -206,7 +210,6 @@ connectMysql();
                         do:"quit"
                     },
                     success: function(response) {
-                            response = JSON.parse(response);
                             window.location.href = "login.html";
                         }
                     });
@@ -214,15 +217,20 @@ connectMysql();
 
 
             function questionList(data){
-                
+                // console.log(typeof data);
+                // var response =JSON.stringify(data);
                 $("#question-list").html("");
+                // if( response = ''){
+                //     $("#null-text").html("目前没有人提问，想成为第一个提问的人吗？");
+                //     return;
+                // }
                 for(var index in data){
                     var question = data[index];
 
                     $("#question-list").append('\
                     <div class="question-items">\
                         <p class="connect">'+question.question+'</p>\
-                        <p class="time">"#"'+question.i+'\t \t发表于-'+question.time+' \t \t By- '+question.name+' </p>\
+                        <p class="time">#'+question.i+'\t \t发表于-'+question.time+' \t \t By- '+question.name+' </p>\
                         <input class="delete" data-id='+question.id+' id="delete" value="删除" unselectable="on" readonly="readonly">\
                     </div>\
                     ');
