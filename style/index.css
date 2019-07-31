@@ -1,0 +1,115 @@
+html,
+body {
+  margin: 0;
+  height: 100%;
+  background: #423f3f;
+}
+* {
+  margin: 0;
+}
+main {
+  background: white;
+  width: 800px;
+  height: 100%;
+  margin: auto;
+  border: 1px solid transparent;
+  overflow: auto;
+}
+main h1 {
+  margin: 20px;
+}
+main #questions-submit {
+  margin: 20px;
+}
+main #questions-submit input[name] {
+  width: 85%;
+  height: 50px;
+  border: 1px solid black;
+  border-radius: 10px;
+  padding: 5px;
+  font-size: 20px;
+  outline-color: transparent;
+}
+main #questions-submit input[name]:hover {
+  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.15);
+}
+main #questions-submit input[id="question-btn"] {
+  text-align: center;
+  width: 100px;
+  height: 60px;
+  border-radius: 1px;
+  color: white;
+  border: 1px solid transparent;
+  border-radius: 5px;
+  background: #177bec;
+  cursor: pointer;
+  outline-color: transparent;
+}
+main #questions-submit input[id="question-btn"]:active {
+  background: #104e96;
+}
+main #questions-submit input[id="question-btn"]:hover {
+  background: #08376d;
+}
+main #questions-submit input[type="radio"] {
+  width: 10px;
+}
+main #post_iframe {
+  display: none;
+}
+main .error {
+  border: 0px;
+  color: red;
+  margin: -15px;
+  padding: 0;
+  text-align: center;
+}
+main .none {
+  text-align: center;
+  font-size: 14px;
+  color: rgba(153, 145, 145, 0.5);
+  margin: 20px;
+  border-radius: 5px;
+  padding: 10px;
+}
+main .question-items {
+  margin: 20px;
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  border-radius: 5px;
+  padding: 10px;
+  position: relative;
+  padding-bottom: 40px;
+  box-shadow: 0px 0px 5px #ccc;
+}
+main .question-items p {
+  margin: 5px;
+}
+main .question-items .time {
+  font-size: 12px;
+  position: absolute;
+  margin-bottom: -20px;
+  color: #ccc;
+}
+main .question-items .delete {
+  text-align: right;
+  display: none;
+  color: #ccc;
+  float: right;
+  margin-bottom: -21px;
+  background: transparent;
+  border: transparent;
+  cursor: pointer;
+  outline: none;
+}
+main .question-items .delete:hover {
+  color: red;
+}
+main .question-items:hover .delete {
+  display: block;
+}
+main .question-items input[name=id] {
+  display: none;
+}
+main #delete_iframe {
+  display: none;
+}

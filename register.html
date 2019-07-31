@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>注册</title>
+    <link rel="icon" type="image/x-icon" href="img/注册.ico" />
+    <link href="style/register.less" rel="stylesheet/less">
+    <script src="lib/jquery-3.1.4.js"></script>
+    <script src="lib/less-3.9.0.min.js"></script>
+    <link href="style/bootstrap.min.css" rel="stylesheet">
+    <script src="lib/bootstrap.min.js"></script>
+</head>
+
+<body>
+    <main>
+        <form id="register-form">
+            <h1 class="text-center">注册</h1>
+            <div class="form-group">
+                <label for="exampleInputEmail1">邮箱</label>
+                <input type="email" class="form-control" name="email" id="email" placeholder="请输入你要注册的邮箱">
+            </div>
+            <p class="bg-danger" id="email-error"></p>
+
+            <div class="form-group">
+                <label for="exampleInputPassword1">密码</label>
+                <input type="password" class="form-control" name="password" id="password" placeholder="请输入你的密码">
+            </div>
+
+            <div class="form-group">
+                <label for="exampleInputPassword1">重复密码</label>
+                <input type="password" class="form-control" id="repeat-password" placeholder="请再次输入你的密码">
+            </div>
+            <p class="bg-danger" id="password-error"></p>
+
+            <div class="form-group">
+                <label for="exampleInputPassword1">昵称</label>
+                <input class="form-control" name="nickName" id="nickName" placeholder="请输入你的昵称">
+            </div>
+            <p class="bg-danger" id="nickname-error"></p>
+
+            <label>
+                <input type="checkbox" value="false" class="seven-day" hidden="hidden">
+            </label>
+            <p class="bg-danger" id="error-text"></p>
+            <button id="register-btn" class="btn btn-success" type="submit">&nbsp;注册&nbsp;</button>      
+            <a href="login.html" class="btn btn-primary pull-right" role="button">&nbsp;登陆&nbsp;</a>
+        </form>
+        <div class="text-right">
+        </div>
+    </main>
+
+    <!-- <iframe id="register-iframe" name="register-iframe" class="hidden"></iframe> -->
+
+    <script>
+        // var register_iframe = document.getElementById("register-iframe");
+        // register_iframe.addEventListener("load", function() {
+        //     var result = register_iframe.contentDocument.body.innerHTML;
+        //     if (result === "success") {
+        //         location.href = "index.php";
+        //     } else {
+        //         document.getElementById("error-text").innerHTML = result;
+        //     }
+        // });
+        // if ($("#password").val() != $("#repeat-password").val()){
+        //     $("#password-text").html("两次输入的密码不一样，请重新输入");
+        // }else{
+        var a = false;
+        var b = false;
+
+        function passwordCompare() {
+            $("#repeat-password,#password").blur(function() {
+                // console.log(typeof($("#repeat-password").val()));
+                // console.log($("#repeat-password").val() == $("#password").val());
+
+                // console.log($("#repeat-password").val());
+                // console.log($("#password").val());
+
+                // console.log(typeof($("#password").val()));
+                if ($("#password").val() !== "" && $("#repeat-password").val() !== "") {
+                    if ($("#password").val() == $("#repeat-password").val()) {
+
+                        $("#password-error").removeClass("bg-danger").addClass("bg-success");
+                        $("#password-error").html("两次密码输入一致!");
+                        a = true;
+                    } else {
+                        $("#password-error").removeClass("bg-success").addClass("bg-danger");
+                        $("#password-error").html("两次密码输入不一致，请重新输入!");
+                        a = false;
+                    }
+                }
+
+            });
+            // return false;
+        };
+
+        $("#register-form").submit(function(e) {
+            $("#error-text").html("");
+            e.preventDefault();
+            if (a&&b) {
+                $.ajax({
+                    url: 'handle/userhandle.php',
+                    type: 'post',
+                    data: 
+                    {
+                        do:"newAccount",
+                        email: $("#email").val(),
+                        password: $("#password").val(),
+                        nickName: $("#nickName").val()
+                    },
+                    success: function(response) {
+                        response = JSON.parse(response);
+                        console.log(response.code);
+                        $("#error-text").html(response.msg);
+                        if (response.code == "0000") {
+                            location.href = "index.html";
+                        }
+                    }
+                });
+            }
+
+        });
+        function emailCMP(){
+            $("#email").blur(function() {
+            $.ajax({
+                url: "handle/userhandle.php",
+                type: "post",
+                data: {
+                    do:"authEmail",
+                    email: $("#email").val()
+                },
+                success: function(response) {
+                    response = JSON.parse(response);
+                    if (response.code == "0000") {
+                        $("#email-error").removeClass("bg-danger").addClass("bg-success");
+                        $("#email-error").html("该邮箱可以注册");
+                        b = true;
+                    } else {
+                        $("#email-error").removeClass("bg-success").addClass("bg-danger");
+                        $("#email-error").html("该邮箱已被注册!");
+                        b = false;
+                    }
+                }
+            });
+        });
+        };
+        
+
+
+        emailCMP();
+        passwordCompare();
+
+
+
+        // }
+    </script>
+</body>
+
+</html>

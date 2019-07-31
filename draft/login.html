@@ -1,0 +1,35 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <link href="style/login.less" rel="stylesheet/less">
+    <script src="lib/jquery-3.1.4.js"></script>
+    <script src="lib/less-3.9.0.min.js"></script>
+</head>
+<body>
+    <main>
+        <h1>登陆</h1>
+        <img src="IMG/3.PNG">
+        <form action="login.php" method="POST" target="" >
+            <div class="user-name">
+                <h2>用户名</h2>
+                <input type="text" name="username" placeholder="请输入你的用户名" autocomplete="off">
+            </div>
+            <div class="user-password">
+                <h2> 密&nbsp;&nbsp;&nbsp;&nbsp;码</h2>
+                <input type="password" name="userpassword" placeholder="请输入你的密码" autocomplete="off">
+            </div>
+                <!-- <input class="create-user" type="submit" value="注册"> -->
+            <input class="login" type="submit" value="登陆">
+            <div class="two-button">
+                <a class="forget-password" href="">忘记密码</a>
+                <a class="create-user" href="createUser.html">注册新用户</a>                
+            </div>
+        </form>
+    </main>
+</body>
+</html>
