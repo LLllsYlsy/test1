@@ -1,9 +1,9 @@
 <?php
 $do = "";
-if(isset($_POST['do'])){
+if (isset($_POST['do'])) {
     $do = $_POST['do'];
 }
-if(isset($_GET['do'])){
+if (isset($_GET['do'])) {
     $do = $_GET['do'];
 }
 
@@ -11,7 +11,8 @@ $do();
 
 
 //登陆
-function loginAccount(){
+function loginAccount()
+{
     include_once(dirname(__DIR__) . "/model/Account.php");
     $email = $_POST['email'];
     $password = $_POST['password'];
@@ -59,48 +60,53 @@ function loginAccount(){
             die(json_encode($response));
             break;
     }
-    
 }
 
 
 //注册
-function newAccount(){
-    include_once(dirname(__DIR__)."/model/Account.php");
+function newAccount()
+{
+    include_once(dirname(__DIR__) . "/model/Account.php");
     $email = $_POST['email'];
     $password = $_POST['password'];
     $nickName = $_POST['nickName'];
     $account = new account();
     $result = $account->create($email, $password, $nickName);
-    
+
     switch ($result) {
         case 0:
             $response = [
-            "code" => "0001",
-            "msg" => "账号已存在"
+                "code" => "0001",
+                "msg" => "账号已存在"
             ];
             die(json_encode($response));
             break;
         case 1:
-            setcookie('test',$nickName,time(),'/');
+            setcookie('test', $nickName, time(), '/');
             $response = [
                 "code" => "0000",
-                "msg" => "注册成功"
+                "msg" => "可以注册"
             ];
             die(json_encode($response));
             break;
         case 2:
             $response = [
-            "code" => "0001",
-            "msg" => "无法连接网络"
+                "code" => "0001",
+                "msg" => "无法连接网络"
             ];
             die(json_encode($response));
+            break;
+
+        default:
+            die(json_encode($result));
             break;
     }
 }
 
 
 //获取用户名
-function getNickname(){
+function getNickname()
+{
     session_start();
     if (isset($_COOKIE['name'])) {
         $_SESSION['name'] = $_COOKIE['name'];
@@ -119,12 +125,12 @@ function getNickname(){
         "data" => $_SESSION['name']
     ];
     die(json_encode($response));
-    
 }
 
 
 //注册邮箱验证
-function authEmail(){
+function authEmail()
+{
     include_once(dirname(__DIR__) . "/model/Account.php");
     $email = $_POST['email'];
     $account = new account();
@@ -145,19 +151,47 @@ function authEmail(){
             die(json_encode($response));
             break;
     }
-    
 }
 
 //退出
-function quit(){
+function quit()
+{
     session_start();
     session_destroy();
     $_SESSION = array();
-    setcookie('test',"",time()-3600,"/");
+    setcookie('test', "", time() - 3600, "/");
     $response = [
         "code" => "0000",
         "msg" => "成功退出"
     ];
     die(json_encode($response));
-    
+}
+
+
+
+//验证密码
+function authpassword()
+{
+    $password = $_POST['password'];
+    //密码长度6-16位
+    if (!preg_match("/.{6,16}/", $password)) {
+        $response = [
+            "code" => "0002",
+            "msg" => "密码长度必须要大于6位且小于16位"
+        ];
+        die(json_encode($response));
+    }
+    //密码必须要一个大写或者小写
+    if (!preg_match("/^[a-zA-Z]{1,}\d{1,16}/", $password)) {
+        $response = [
+            "code" => "0002",
+            "msg" => "密码必须要有数字至少且要开头是一个英文"
+        ];
+        die(json_encode($response));
+    }
+    $response = [
+        "code" => "0000",
+        "mag" => "密码OK"
+    ];
+    die(json_encode($response));
 }

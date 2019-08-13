@@ -113,7 +113,7 @@ function delete(){
     if(!$result){
         $response = [
             "code" => "0002",
-            "msg" => "不是你提的问题"
+            "msg" => "不能删除别人提的问题!"
         ];
         die(json_encode($response));
     }else{

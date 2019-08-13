@@ -4,11 +4,13 @@ class Account extends SqlHelper
 {
     public function create($email, $password, $nickName)
     {
-        $password = md5($password);
+        
         $result = $this->query('select email from `user` where email ="' . $email . '"');
         if ($result->num_rows !== 0) {
             return 0;
         }
+        
+        $password = md5($password);
         $result = $this->query('insert into `user` (`email`,`password`,`name`) values("' . $email . '","' . $password . '","' . $nickName . '")');
         if ($result) {
             return 1;

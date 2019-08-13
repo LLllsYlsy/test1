@@ -45,7 +45,7 @@
                 <input type="checkbox" value="false" class="seven-day" hidden="hidden">
             </label>
             <p class="bg-danger" id="error-text"></p>
-            <button id="register-btn" class="btn btn-success" type="submit">&nbsp;注册&nbsp;</button>      
+            <button id="register-btn" class="btn btn-success" type="submit">&nbsp;注册&nbsp;</button>
             <a href="login.html" class="btn btn-primary pull-right" role="button">&nbsp;登陆&nbsp;</a>
         </form>
         <div class="text-right">
@@ -69,89 +69,152 @@
         // }else{
         var a = false;
         var b = false;
+        var c = false;
+        var password = /^[a-zA-Z]{1,16}\d{1,16}/;
+        var email = /^\w{2,10}@\w{2,8}\.[a-zA-Z]{2,8}$/;
+        var nickname = /^[\u4e00-\u9fa5]{2,5}$/;
 
         function passwordCompare() {
-            $("#repeat-password,#password").blur(function() {
-                // console.log(typeof($("#repeat-password").val()));
-                // console.log($("#repeat-password").val() == $("#password").val());
+            $("#repeat-password,#password").blur(function () {
+                if ($("#password").val().length >= 6 && $("#password").val().length <= 16) {
+                    if (password.exec($("#password").val())) {
+                        if ($("#password").val() !== "" && $("#repeat-password").val() !== "") {
+                            $.ajax({
+                                url: "handle/userhandle.php",
+                                type: "post",
+                                data: {
+                                    do: "authpassword",
+                                    password: $("#password").val()
+                                },
+                                success: function (response) {
+                                    console.log(response);
+                                    response = JSON.parse(response);
+                                    if (response.code !== "0000") {
+                                        $("#password-error").removeClass("bg-success").addClass(
+                                            "bg-danger");
+                                        $("#password-error").html(response.msg);
+                                        a = false;
+                                    } else {
+                                        if ($("#password").val() == $("#repeat-password").val()) {
+                                            $("#password-error").removeClass("bg-danger").addClass(
+                                                "bg-success");
+                                            $("#password-error").html("两次密码输入一致!");
+                                            a = true;
+                                        } else {
+                                            $("#password-error").removeClass("bg-success").addClass(
+                                                "bg-danger");
+                                            $("#password-error").html("两次密码输入不一致，请重新输入!");
+                                            a = false;
+                                        }
 
-                // console.log($("#repeat-password").val());
-                // console.log($("#password").val());
+                                    }
+                                }
+                            })
 
-                // console.log(typeof($("#password").val()));
-                if ($("#password").val() !== "" && $("#repeat-password").val() !== "") {
-                    if ($("#password").val() == $("#repeat-password").val()) {
-
-                        $("#password-error").removeClass("bg-danger").addClass("bg-success");
-                        $("#password-error").html("两次密码输入一致!");
-                        a = true;
+                        }
                     } else {
                         $("#password-error").removeClass("bg-success").addClass("bg-danger");
-                        $("#password-error").html("两次密码输入不一致，请重新输入!");
+                        $("#password-error").html("密码只能输入数字,字母,且必须要以一个英文字母开头");
                         a = false;
                     }
+                } else {
+                    $("#password-error").removeClass("bg-success").addClass("bg-danger");
+                    $("#password-error").html("请输入6位数以上的密码");
+                    a = false;
                 }
+
+
 
             });
             // return false;
         };
 
-        $("#register-form").submit(function(e) {
+        $("#register-form").submit(function (e) {
             $("#error-text").html("");
             e.preventDefault();
-            if (a&&b) {
+            if (a && b && c) {
                 $.ajax({
                     url: 'handle/userhandle.php',
                     type: 'post',
-                    data: 
-                    {
-                        do:"newAccount",
+                    data: {
+                        do: "newAccount",
                         email: $("#email").val(),
                         password: $("#password").val(),
                         nickName: $("#nickName").val()
                     },
-                    success: function(response) {
+                    success: function (response) {
                         response = JSON.parse(response);
                         console.log(response.code);
                         $("#error-text").html(response.msg);
                         if (response.code == "0000") {
-                            location.href = "index.html";
+                            location.href = "login.html";
                         }
                     }
                 });
             }
 
         });
-        function emailCMP(){
-            $("#email").blur(function() {
-            $.ajax({
-                url: "handle/userhandle.php",
-                type: "post",
-                data: {
-                    do:"authEmail",
-                    email: $("#email").val()
-                },
-                success: function(response) {
-                    response = JSON.parse(response);
-                    if (response.code == "0000") {
-                        $("#email-error").removeClass("bg-danger").addClass("bg-success");
-                        $("#email-error").html("该邮箱可以注册");
-                        b = true;
+
+        function emailCMP() {
+            $("#email").blur(function () {
+                if (email.exec($("#email").val())) {
+                    $.ajax({
+                        url: "handle/userhandle.php",
+                        type: "post",
+                        data: {
+                            do: "authEmail",
+                            email: $("#email").val()
+                        },
+                        success: function (response) {
+                            response = JSON.parse(response);
+                            if (response.code == "0000") {
+                                $("#email-error").removeClass("bg-danger").addClass("bg-success");
+                                $("#email-error").html("该邮箱可以注册");
+                                b = true;
+                            } else {
+                                $("#email-error").removeClass("bg-success").addClass("bg-danger");
+                                $("#email-error").html("该邮箱已被注册!");
+                                b = false;
+                            }
+                        }
+                    });
+                } else {
+                    $("#email-error").removeClass("bg-success").addClass("bg-danger");
+                    $("#email-error").html("请输入正确的邮箱格式，如：'xxx@xx.xxx'");
+                    b = false;
+                }
+
+            });
+        };
+
+        function nickNameCMP() {
+            $("#nickName").blur(function () {
+                if ($("#nickName").val().length >= 2) {
+                    if (nickname.exec($("#nickName").val())) {
+                        console.log(1);
+                        $("#nickname-error").removeClass("bg-danger").addClass("bg-success");
+                        $("#nickname-error").html("可以使用该昵称");
+                        c = true;
                     } else {
-                        $("#email-error").removeClass("bg-success").addClass("bg-danger");
-                        $("#email-error").html("该邮箱已被注册!");
-                        b = false;
+                        console.log(2);
+                        $("#nickname-error").removeClass("bg-success").addClass("bg-danger");
+                        $("#nickname-error").html("该昵称不可使用，请输入中文昵称!");
+                        c = false;
                     }
+                } else {
+                    $("#nickname-error").removeClass("bg-success").addClass("bg-danger");
+                    $("#nickname-error").html("请输入两个字或以上的昵称");
+                    c = false;
                 }
             });
-        });
-        };
-        
+        }
+
+
 
 
         emailCMP();
         passwordCompare();
-
+        nickNameCMP();
 
 
         // }

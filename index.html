@@ -23,20 +23,22 @@ connectMysql();
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Document</title>
-    <link rel="icon" type="image/x-icon" href="img/主页.ico"/>
+    <link rel="icon" type="image/x-icon" href="img/主页.ico" />
     <link href="style/index.less" rel="stylesheet/less">
     <script src="lib/jquery-3.1.4.js"></script>
     <script src="lib/less-3.9.0.min.js"></script>
     <link href="style/bootstrap.min.css" rel="stylesheet">
     <script src="lib/bootstrap.min.js"></script>
     <style>
-        #nav{
+        #nav {
             margin-bottom: 0px;
         }
-        html,body {
+
+        html,
+        body {
             margin: 0;
             height: 100%;
-            background: rgb(66, 63, 63);    
+            background: rgb(66, 63, 63);
         }
 
         * {
@@ -59,7 +61,8 @@ connectMysql();
         <div class="container-fluid">
             <!-- Brand and toggle get grouped for better mobile display -->
             <div class="navbar-header">
-                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
+                    data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
                     <span class="sr-only">Toggle navigation</span>
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
@@ -72,7 +75,8 @@ connectMysql();
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                 <ul class="nav navbar-nav navbar-right">
                     <li class="dropdown">
-                        <a id="user-name" href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+                        <a id="user-name" href="#" class="dropdown-toggle" data-toggle="dropdown" role="button"
+                            aria-haspopup="true" aria-expanded="false">
                             <span class="caret"></span></a>
                         <ul class="dropdown-menu">
                             <li><a href="#" id="quit">退出</a></li>
@@ -102,9 +106,7 @@ connectMysql();
         </div>
 
         <script>
-            
-
-            $("#questions-submit").submit(function(e){
+            $("#questions-submit").submit(function (e) {
                 e.preventDefault();
                 $("#error-text").html("");
                 var question = $("#question").val();
@@ -112,56 +114,55 @@ connectMysql();
                     url: "handle/question.php",
                     type: "post",
                     data: {
-                        do:"questionSubmit",
+                        do: "questionSubmit",
                         question: question,
-                        name:$("#user-name").text()
+                        name: $("#user-name").text()
                     },
-                    success: function(response) { 
+                    success: function (response) {
                         response = JSON.parse(response);
                         if (response.code !== "0000") {
                             $("#error-text").html(response.msg);
                             return;
                         }
-                            questionList(response.data);
-                            $("#null-text").html("");
-                            $("#question").val("");
-                        },
-                    error:function(){
+                        questionList(response.data,response.msg);
+                        $("#null-text").html("");
+                        $("#question").val("");
+                    },
+                    error: function () {
                         $("#error-text").html("无法连接网络");
                     }
-                    
-                    });
-                });
-            
 
-            $(window).on("load",function(){
+                });
+            });
+
+
+            $(window).on("load", function () {
                 $.ajax({
-                    url:"handle/userhandle.php",
-                    type:"get",
-                    data:{
-                        do:"getNickname"
+                    url: "handle/userhandle.php",
+                    type: "get",
+                    data: {
+                        do: "getNickname"
                     },
-                    success:function(response){
+                    success: function (response) {
                         response = JSON.parse(response);
-                        if(response.code !== "0000"){
-                            location.href="login.html";
+                        if (response.code !== "0000") {
+                            location.href = "login.html";
                             return;
-                        }else{
-                            $("#user-name").html(response.data+'<span class="caret"></span></a>');
+                        } else {
+                            $("#user-name").html(response.data + '<span class="caret"></span></a>');
                             $.ajax({
-                                url:"handle/question.php",
-                                type:"get",
-                                data:{
-                                    do:"questionList"
+                                url: "handle/question.php",
+                                type: "get",
+                                data: {
+                                    do: "questionList"
                                 },
-                                success:function(response){
+                                success: function (response) {
                                     response = JSON.parse(response);
-                                    if(response.code !== "0000"){
+                                    if (response.code !== "0000") {
                                         $("#error-text").html(response.msg);
                                         return;
                                     }
-                                    $("#null-text").html(response.msg);
-                                    questionList(response.data);
+                                    questionList(response.data, response.msg);
                                 }
                             });
                         }
@@ -169,10 +170,10 @@ connectMysql();
                 });
             });
 
-           
+
 
             function deleteBtn() {
-                $(".delete").click(function() {
+                $(".delete").click(function () {
                     $("#error-text").html("");
                     var Id = $(this).data("id");
                     console.log(Id);
@@ -180,43 +181,45 @@ connectMysql();
                         url: "handle/question.php",
                         type: "post",
                         data: {
-                            do:"delete",
+                            do: "delete",
                             id: Id,
-                            name:$("#user-name").text()
+                            name: $("#user-name").text()
                         },
-                        success: function(response) {
+                        success: function (response) {
                             response = JSON.parse(response);
-                            if(response.code !== "0000"){
+                            console.log(response);
+                            if (response.code !== "0000") {
                                 $("#error-text").html(response.msg);
                                 return;
                             }
-                            questionList(response.data);
-                            }
-                        })
-                    });
-                };
-            
+                            questionList(response.data, response.msg);
+                            
+                        }
+                    })
+                });
+            };
+
             deleteBtn();
 
-            $("#question").click(function() {
+            $("#question").click(function () {
                 $("#error-text").html("");
             });
 
-            $("#quit").click(function() {
+            $("#quit").click(function () {
                 $.ajax({
                     url: "handle/userhandle.php",
                     type: "post",
-                    data:{
-                        do:"quit"
+                    data: {
+                        do: "quit"
                     },
-                    success: function(response) {
-                            window.location.href = "login.html";
-                        }
-                    });
+                    success: function (response) {
+                        window.location.href = "login.html";
+                    }
+                });
             });
 
 
-            function questionList(data){
+            function questionList(data, msg) {
                 // console.log(typeof data);
                 // var response =JSON.stringify(data);
                 $("#question-list").html("");
@@ -224,19 +227,36 @@ connectMysql();
                 //     $("#null-text").html("目前没有人提问，想成为第一个提问的人吗？");
                 //     return;
                 // }
-                for(var index in data){
+                if (data == "") {
+                    $("#null-text").html(msg);
+                }
+                for (var index in data) {
                     var question = data[index];
-
                     $("#question-list").append('\
                     <div class="question-items">\
-                        <p class="connect">'+question.question+'</p>\
-                        <p class="time">#'+question.i+'\t \t发表于-'+question.time+' \t \t By- '+question.name+' </p>\
-                        <input class="delete" data-id='+question.id+' id="delete" value="删除" unselectable="on" readonly="readonly">\
+                        <p class="connect">' + question.question + '</p>\
+                        <p class="time">#' + question.i + '\t \t发表于-' + question.time + ' \t \t By- ' + question.name + ' </p>\
+                        <input class="delete" data-id=' + question.id + ' id="delete" value="删除" unselectable="on" readonly="readonly">\
                     </div>\
                     ');
                 }
+                // MyDelete();                    
+
                 deleteBtn();
             }
+            
+            // function MyDelete(){
+            //     var userName = $("#user-name").text();
+            //     if($(".time").text().indexOf(userName) !== -1){
+            //         $(".question-items").hover(function () {
+            //         $(this).find(".delete").css("display", "block");
+            //         }, function () {
+            //         $(this).find(".delete").css("display", "none");
+            //     });
+            //     } 
+            // }
+            // MyDelete();                    
+            
         </script>
     </main>
 </body>

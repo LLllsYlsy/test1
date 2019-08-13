@@ -22,11 +22,13 @@
                 <label for="exampleInputEmail1">邮箱</label>
                 <input type="email" class="form-control" name="email" id="email" placeholder="请输入邮箱">
             </div>
+            <p class="bg-danger" id="email-error"></p>
 
             <div class="form-group">
                 <label for="exampleInputPassword1">密码</label>
                 <input type="password" class="form-control" name="password" id="password" placeholder="请输入密码">
             </div>
+            <p class="bg-danger" id="password-error"></p>
             <p class="bg-danger" id="error-text"></p>
 
 
@@ -43,6 +45,12 @@
 
 
         <script>
+            var a = false;
+            var b = false;
+            var password = /^[a-zA-Z]{1,16}\d{1,16}/;
+            var email = /^\w{2,10}@\w{2,8}\.[a-zA-Z]{2,8}$/;
+
+
             window.addEventListener("load", function () {
                 $("#login-form").submit(function (e) {
                     e.preventDefault();
@@ -79,6 +87,49 @@
                     }
                 })
             });
+
+            function emailCMP() {
+                $("#email").blur(function () {
+                    console.log($("#email").val());
+                    if (email.exec($("#email").val())) {
+                        $("#email-error").removeClass("bg-danger").addClass("bg-success");
+                        $("#email-error").html("");
+                        b = true;
+                    } else {
+                        $("#email-error").removeClass("bg-success").addClass("bg-danger");
+                        $("#email-error").html("请输入正确的邮箱格式，如：'xxx@xx.xxx'");
+                        b = false;
+                    }
+
+                });
+            };
+
+            function passwordCompare() {
+                $("#password").blur(function () {
+                    if ($("#password").val().length >= 6) {
+                        console.log($("#password").val().length)
+                        if (password.exec($("#password").val())) {
+                            if ($("#password").val() !== "" && $("#password").val() !== "") {
+                                a = true
+                            } else {
+                                $("#password-error").removeClass("bg-success").addClass("bg-danger");
+                                $("#password-error").html("密码只能输入数字,字母, _ , ! , @ , # , % , & ");
+                                a = false;
+                                }
+                            }
+
+                        // return false;
+                    } else {
+                        $("#password-error").removeClass("bg-success").addClass("bg-danger");
+                        $("#password-error").html("请输入6位数以上的密码");
+                        a = false;
+                    }
+                })
+            }
+
+
+            emailCMP();
+            passwordCompare();
         </script>
 
     </main>
